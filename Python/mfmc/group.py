@@ -103,7 +103,7 @@ class Group(ABC, MutableMapping):
         return ret
 
     @property
-    def user_datasets(self) -> Dict[str, Any]:#
+    def user_datasets(self) -> Dict[str, Any]:
         """A dictionary with pairs of name and dataset values."""
         ret = {}
         for k, v in self._group.items():

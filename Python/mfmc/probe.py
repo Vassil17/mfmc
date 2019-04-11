@@ -40,3 +40,34 @@ class Probe(Group):
         self._name = group.name
         self._group = group
         self._num = self._PROBE_RE.match(group.name).group(1)
+
+    @staticmethod
+    def _set_datafield(group, name, datafields, attr=False):
+        try:
+            data = datafields[name.lower()]
+            if isinstance(data, str):
+                data = data.encode('ascii')
+        except KeyError:
+            return
+        else:
+            if attr:
+                group.attrs[name] = datafields[name.lower()]
+            else:
+                group[name] = datafields[name.lower()]
+
+    @staticmethod
+    def create_probe(file, num: int, datafields: Dict[str, Any]) -> Probe:
+        # First, check mandatory ones are there
+        missing = [e for e in self._MANDATORY_ATTRS + self._MANDATORY_DATASETS
+                   if e not in datafields.keys()]
+        if missing:
+            raise ValueError(f"Required datafields not set: {missing}")
+            return None
+
+        name = f'PROBE<{num}>'
+        group = file.create_group(name)
+
+        for a in self._MANDATORY_ATTRS + self._OPTIONAL_ATTRS:
+            self._set_datafield(group, a, datafields, True)
+        for d in self._MANDATORY_DATASETS + self._OPTIONAL_DATASETS:
+            self._set_datafield(group, d, datafields)
