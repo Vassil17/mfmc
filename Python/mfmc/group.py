@@ -1,18 +1,28 @@
+from abc import ABC
 from collections.abc import MutableMapping
+from typing import Any, Dict
 
 from .exceptions import RequiredDatafieldError, OptionalDatafieldError
 
 
-class Group(MutableMapping):
+class Group(ABC, MutableMapping):
+    """A dictionary like representation of a HDF5 group.
+
+    Class Attributes
+    ----------------
+    _MANDATORY_DATASETS : List[str]
+        A list of mandatory datasets
+    _MANDATORY_ATTRS : List[str]
+        A list of mandatory attributes
+    _OPTIONAL_DATASETS : List[str]
+        A list of optional datasets
+    _OPTIONAL_ATTRS : List[str]
+        A list of optional attributes
+    """
     _MANDATORY_DATASETS = []
     _MANDATORY_ATTRS = []
     _OPTIONAL_DATASETS = []
     _OPTIONAL_ATTRS = []
-
-    def __init__(self):
-        self._group = NotImplemented
-        self._number = NotImplemented
-        self._name = NotImplemented
 
     def __getitem__(self, key):
         key = key.upper()
@@ -43,12 +53,36 @@ class Group(MutableMapping):
         return iter(self.keys())
 
     @classmethod
-    def is_mandatory(cls, datafield):
+    def is_mandatory(cls, datafield: str) -> bool:
+        """Checks if a datafield name is a mandatory datafield.
+
+        Parameters
+        ----------
+        datafield
+            The name of a datafield to check.
+
+        Returns
+        -------
+        mandatory
+            Whether the datafield is a mandatory one
+        """
         item = datafield.upper()
         return item in cls._MANDATORY_DATASETS + cls._MANDATORY_ATTRS
 
     @classmethod
-    def is_optional(cls, datafield):
+    def is_optional(cls, datafield: str) -> bool:
+        """Checks if a datafield name is an optional datafield.
+
+        Parameters
+        ----------
+        datafield
+            The name of a datafield to check.
+
+        Returns
+        -------
+        optional
+            Whether the datafield is a optional one.
+        """
         item = datafield.upper()
         return item in cls._OPTIONAL_DATASETS + cls._OPTIONAL_ATTRS
 
@@ -60,7 +94,8 @@ class Group(MutableMapping):
             return data
 
     @property
-    def user_attributes(self):
+    def user_attributes(self) -> Dict[str, Any]:
+        """A dictionary with pairs of name and attribute values."""
         ret = {}
         for k, v in self._group.attrs.items():
             if k not in self._MANDATORY_ATTRS + self._OPTIONAL_ATTRS:
@@ -68,7 +103,8 @@ class Group(MutableMapping):
         return ret
 
     @property
-    def user_datasets(self):
+    def user_datasets(self) -> Dict[str, Any]:#
+        """A dictionary with pairs of name and dataset values."""
         ret = {}
         for k, v in self._group.items():
             if k not in self._MANDATORY_DATASETS + self._OPTIONAL_DATASETS:
@@ -76,9 +112,17 @@ class Group(MutableMapping):
         return ret
 
     @property
-    def number(self):
+    def number(self) -> int:
+        """The 'number' of the group.
+
+        For example, '1' for the group with name 'PROBE<1>'
+        """
         return self._num
 
     @property
-    def name(self):
+    def name(self) -> str:
+        """The 'name' of the group.
+
+        For example, 'PROBE<1>'
+        """
         return self._name

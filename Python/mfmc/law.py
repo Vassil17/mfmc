@@ -8,4 +8,11 @@ class Law(Group):
     _OPTIONAL_ATTRS = []
 
     def __init__(self, group):
+        """Representation of a law which belongs to a sequence.
+
+        Parameters
+        ----------
+        group : h5py.Group
+            The h5py group for the law.
+        """
         self._group = group

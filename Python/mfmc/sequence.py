@@ -1,4 +1,5 @@
 import re
+from typing import List
 
 from .group import Group
 from .law import Law
@@ -36,6 +37,13 @@ class Sequence(Group):
     _LAW_RE = re.compile(r'LAW<\d+>')
 
     def __init__(self, group):
+        """Representation of a sequence from a MFMC file.
+
+        Parameters
+        ----------
+        group : h5py.Group
+            The h5py group for the sequence.
+        """
         self._name = group.name
         self._group = group
         self._num = self._SEQUENCE_RE.match(group.name).group(1)
@@ -44,5 +52,6 @@ class Sequence(Group):
            if self._LAW_RE.match(k)]
 
     @property
-    def laws(self):
+    def laws(self) -> List[Law]:
+        """List of law objects for the sequence."""
         return self._laws
