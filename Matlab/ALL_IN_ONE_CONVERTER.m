@@ -11,7 +11,7 @@
 close all; clear all; clc;
 
 %Name of MFMC file to create
-fname = 'laser2.mfmc';
+fname = 'laser_test.mfmc';
 % 
 if exist(fname, 'file')
      delete(fname);
