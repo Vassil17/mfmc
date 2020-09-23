@@ -51,6 +51,14 @@ for jj=1:length(sections)
             locs(jj)=count;
             for ii=1:need_fields(jj)
                 cfg_dat{tot_count,1}=dataArray{1}{locs(jj)+ii};
+                k = 2;
+                % In order to get the value corresponding to the data, find
+                % the column with = sign then read value from the next
+                % column
+                while (dataArray{k}{locs(jj)+ii}) ~= '='
+                    k = k+1;
+                end
+                cfg_dat{tot_count,2}=dataArray{k+1}{locs(jj)+ii};
                 cfg_dat{tot_count,2}=dataArray{4}{locs(jj)+ii};
                 tot_count=tot_count+1;
             end
@@ -74,7 +82,7 @@ exp_data.ph_velocity=ph_vel;
 el_xc=[1:num_els]*pitch;
 exp_data.array.el_xc=el_xc-mean(el_xc);
 exp_data.array.el_x1=exp_data.array.el_xc-pitch/2;
-exp_data.array.el_x1=exp_data.array.el_xc+pitch/2;
+exp_data.array.el_x2=exp_data.array.el_xc+pitch/2;
 exp_data.array.el_yc=zeros(size(el_xc));
 exp_data.array.el_y1=exp_data.array.el_yc;
 exp_data.array.el_y2=exp_data.array.el_yc;
@@ -91,5 +99,5 @@ for ii=1:num_els
     end
 end
 
-%save(fname,'exp_data')
+save(fname,'exp_data')
 end
