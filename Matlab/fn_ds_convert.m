@@ -59,7 +59,6 @@ for jj=1:length(sections)
                     k = k+1;
                 end
                 cfg_dat{tot_count,2}=dataArray{k+1}{locs(jj)+ii};
-                cfg_dat{tot_count,2}=dataArray{4}{locs(jj)+ii};
                 tot_count=tot_count+1;
             end
         end
